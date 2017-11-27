@@ -1,0 +1,12 @@
+"""Snippet IPython code with basic imports/configs"""
+%matplotlib inline
+%config InlineBackend.figure_format = 'svg'
+%load_ext autoreload
+%autoreload 2
+
+from IPython.core.interactiveshell import InteractiveShell
+import matplotlib.pyplot as plt
+
+InteractiveShell.ast_node_interactivity = 'all'
+plt.rcParams['figure.figsize'] = [12, 8]
+plt.style.use('ggplot')

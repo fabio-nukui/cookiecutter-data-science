@@ -1,0 +1,3 @@
+"""Snippet IPython code to watermark notebook"""
+%load_ext watermark
+%watermark -udtz -v -m -iv -rg
