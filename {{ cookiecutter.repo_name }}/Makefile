@@ -5,15 +5,18 @@
 #################################################################################
 
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-BUCKET = {{ cookiecutter.s3_bucket }}
+S3_BUCKET = {{ cookiecutter.s3_bucket }}
+S3_ROOT_DIR = {{ cookiecutter.s3_root_dir }}
 PROFILE = {{ cookiecutter.aws_profile }}
 PROJECT_NAME = {{ cookiecutter.repo_name }}
 PYTHON_INTERPRETER = {{ cookiecutter.python_interpreter }}
 
+S3_PATH = $(if $(findstring [OPTIONAL],$(S3_ROOT_DIR)),$(S3_BUCKET),$(S3_BUCKET)/$(S3_ROOT_DIR))
+
 ifeq (,$(shell which conda))
-HAS_CONDA=False
+    HAS_CONDA=False
 else
-HAS_CONDA=True
+    HAS_CONDA=True
 endif
 
 #################################################################################
@@ -39,17 +42,17 @@ lint:
 ## Upload Data to S3
 sync_data_to_s3:
 ifeq (default,$(PROFILE))
-	aws s3 sync data/ s3://$(BUCKET)/data/
+	aws s3 sync data/ s3://$(S3_PATH)/data/
 else
-	aws s3 sync data/ s3://$(BUCKET)/data/ --profile $(PROFILE)
+	aws s3 sync data/ s3://$(S3_PATH)/data/ --profile $(PROFILE)
 endif
 
 ## Download Data from S3
 sync_data_from_s3:
 ifeq (default,$(PROFILE))
-	aws s3 sync s3://$(BUCKET)/data/ data/
+	aws s3 sync s3://$(S3_PATH)/data/ data/
 else
-	aws s3 sync s3://$(BUCKET)/data/ data/ --profile $(PROFILE)
+	aws s3 sync s3://$(S3_PATH)/data/ data/ --profile $(PROFILE)
 endif
 
 ## Set up python interpreter environment
